@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+service TodoServer {
+    // Creates a new todo list
+    rpc CreateList(CreateListRequest) returns (Empty) {}
+
+    // Add a task to the list
+    rpc AddToList(AddToListRequest) returns (Item) {}
+
+    // Update a task's status
+    rpc UpdateItemStatus(UpdateItemStatusRequest) returns (Item) {}
+
+    // Gets all the created todo list
+    rpc GetLists(Empty) returns (GetListsResponse) {}
+
+    // Gets a single list
+    rpc GetList(GetListRequest) returns (GetListResponse) {}
+}
+
+message Empty {}
+
+message CreateListRequest {
+    string name = 1;
+}
+
+message AddToListRequest {
+    string list_name = 1;
+    string value = 2;
+}
+
+enum ItemStatus {
+    INCOMPLETE = 0;
+    COMPLETE = 1;
+}
+
+message Item {
+    string item_id = 1;
+    string value = 2;
+    ItemStatus status = 3;
+}
+
+message UpdateItemStatusRequest {
+    string list_name = 1;
+    Item item = 2;
+}
+
+
+message List {
+    string name = 1;
+    repeated Item items = 2;
+}
+
+message GetListsResponse {
+    repeated List lists = 1;
+}
+
+message GetListRequest {
+    string name = 1;
+}
+
+message GetListResponse {
+    repeated Item items = 1;
+}
