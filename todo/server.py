@@ -62,9 +62,6 @@ class TodoServer(TodoServerServicer):
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "List does not exist")
 
         item_id = uuid4()
-        while item_id in items:
-            item_id = uuid4()
-
         item = Item(item_id, request.value, ItemStatus.COMPLETE)
         self.todo_lists[request.list_name][item_id] = item
         return models.Item(
@@ -78,12 +75,10 @@ class TodoServer(TodoServerServicer):
         items = self.todo_lists.get(list_name, None)
         if items is None:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "List does not exist")
-            return models.Item()
 
         item_id = request.item.item_id
         if items.get(item_id, None) is None:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Item does not exist")
-            return models.Item()
 
         updated_item = grpc_to_item(request.item)
         items[item_id] = updated_item
